@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech4Good Team Lead Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ucsc-blue: #003c6c;
+            --ucsc-gold: #fdc700;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --success: #10B981;
+            --accent: #3B82F6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 900;
+            font-size: 28px;
+            color: var(--ucsc-blue);
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: var(--ucsc-gold);
+            color: var(--ucsc-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 24px;
+        }
+
+        .refresh-btn {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            color: var(--ucsc-blue);
+            border-color: var(--ucsc-blue);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--ucsc-blue);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metric-big {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--ucsc-blue);
+            margin: 15px 0;
+        }
+
+        .metric-sub {
+            font-size: 15px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .synthesis-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .synthesis-content {
+            max-width: 600px;
+        }
+
+        .synthesis-content h2 {
+            color: var(--ucsc-blue);
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-badge {
+            background: #eff6ff;
+            color: var(--ucsc-blue);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 300px;
+            border: 2px solid #dbeafe;
+        }
+
+        .rec-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .rec-team {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--text-main);
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            background-color: #e5e7eb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-active {
+            background-color: var(--success);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-sub);
+            grid-column: span 3;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">
+            <div class="logo-box">T4G</div>
+            Team Lead Dashboard
+        </div>
+        <button class="refresh-btn" onclick="loadData()">Refresh Data</button>
+    </div>
+
+    <!-- Candidate Info -->
+    <div style="margin-bottom: 20px; font-weight: 500; font-size: 18px; color: var(--text-sub);">
+        Candidate: <span style="color: var(--text-main); font-weight: 700;">Student Applicant #042</span>
+    </div>
+
+    <div class="grid" id="dashboard-grid">
+        <!-- Injected via JS -->
+        <div class="empty-state">No simulation data found. Please run the demos first.</div>
+    </div>
+
+    <div class="synthesis-section" id="synthesis" style="display:none;">
+        <div class="synthesis-content">
+            <h2>Placement Analysis</h2>
+            <p id="analysis-text" style="line-height: 1.6; color: #4b5563;">
+                Based on the cross-reference of implicit interest (Speed Dating), skill execution (Lab Sim), and mindset
+                archetype (RPG), we have generated a team fit capability score.
+            </p>
+            <div style="margin-top: 20px;">
+                <button class="refresh-btn" style="background: var(--ucsc-blue); color: white; border: none;">Approve
+                    Assignment</button>
+            </div>
+        </div>
+        <div class="recommendation-badge">
+            <div class="rec-title">Recommended Placement</div>
+            <div class="rec-team" id="final-team">Waitlist</div>
+        </div>
+    </div>
+
+    <script>
+        function loadData() {
+            const raw = localStorage.getItem('t4g_research_fit_data');
+            const data = raw ? JSON.parse(raw) : null;
+            const grid = document.getElementById('dashboard-grid');
+            const synthesis = document.getElementById('synthesis');
+
+            if (!data) {
+                grid.innerHTML = '<div class="empty-state">No simulation data found. Please run the demos first.</div>';
+                synthesis.style.display = 'none';
+                return;
+            }
+
+            // Render Cards
+            let html = '';
+
+            // 1. Speed Dating
+            const sd = data.speed_dating;
+            if (sd) {
+                html += `
+                    <div class="card" style="border-color: #ff00cc;">
+                        <h2>🔥 Speed Dating (Interest)</h2>
+                        <div class="metric-big">${sd.top_match}</div>
+                        <div class="metric-sub">
+                            Swiped RIGHT on most tasks related to <strong>${sd.top_match}</strong>.<br>
+                            Highest implicit interest signal.
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += getEmptyCard('Speed Dating', '#ff00cc');
+            }
+
+            // 2. Lab Sim
+            const ls = data.lab_sim;
+            if (ls) {
+                html += `
+                    <div class="card" style="border-color: #fdc700;">
+                        <h2>🔬 Lab Simulation (Skill)</h2>
+                        <div class="metric-big">${ls.rec}</div>
+                        <div class="metric-sub">
+                            Completed modules: ${ls.completed.join(', ')}.<br>
+                            Demonstrated aptitude for data and evaluation protocols.
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += getEmptyCard('Lab Simulation', '#fdc700');
+            }
+
+            // 3. RPG
+            const rpg = data.rpg;
+            if (rpg) {
+                html += `
+                    <div class="card" style="border-color: #27c93f;">
+                        <h2>⚔️ Research RPG (Mindset)</h2>
+                        <div class="metric-big">${rpg.archetype}</div>
+                        <div class="metric-sub">
+                            Navigation choices indicate a preference for system architecture and technical robustness.
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += getEmptyCard('Research RPG', '#27c93f');
+            }
+
+            grid.innerHTML = html;
+            synthesis.style.display = 'flex';
+
+            // Generate Synthesis Logic
+            generateRecommendation(data);
+        }
+
+        function getEmptyCard(title, color) {
+            return `
+                <div class="card" style="border-color: ${color}; opacity: 0.6;">
+                    <h2>${title}</h2>
+                    <div class="metric-big" style="font-size: 24px; color: #ccc;">Pending...</div>
+                    <div class="metric-sub">No data recorded yet.</div>
+                </div>
+            `;
+        }
+
+        function generateRecommendation(data) {
+            const sd = data.speed_dating ? data.speed_dating.top_match : "";
+            const rpg = data.rpg ? data.rpg.archetype : "";
+
+            const teamEl = document.getElementById('final-team');
+            const analysisEl = document.getElementById('analysis-text');
+
+            let team = "General Research Track";
+            let reasoning = "The candidate shows a balanced profile suitable for general research tasks within the lab.";
+
+            // Logic Rules
+            if (sd === 'Agents Exploration' || rpg === 'The Agent Architect') {
+                team = "Agents Exploration";
+                reasoning = "Strong aptitude for technical exploration and conversational agents. Ideal for working with Google SDK/ADK and A2UI to develop agentic experiences and new learning content.";
+            } else if (sd === 'Prototyping/Idea Incubation' || rpg === 'The Design Prototyper') {
+                team = "Prototyping/Idea Incubation";
+                reasoning = "Natural fit for design-based research. Shows promise in framing research projects and using Antigravity for rapid 'vibe coding' and prototype development.";
+            } else if (sd === 'Community RAG (Tech)' || rpg === 'The Technical Community Expert') {
+                team = "Community RAG (Technical)";
+                reasoning = "High technical autonomy and interest in OpenWebUI. Capable of digging into technical content and building independent experiences similar to SlugPath.";
+            } else if (sd === 'Community RAG (Product)' || rpg === 'The Product Hustler') {
+                team = "Community RAG (Product)";
+                reasoning = "Entrepreneurial mindset with a drive for product launch work. Perfect for the hustle required to work with clubs and launch SlugPath successfully.";
+            }
+
+            teamEl.innerText = team;
+            analysisEl.innerText = reasoning;
+        }
+
+        // Init
+        loadData();
+
+    </script>
+</body>
+
+</html>

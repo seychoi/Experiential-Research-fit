@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Research Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Fira Code', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+
+        .terminal {
+            width: 800px;
+            height: 550px;
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .terminal-header {
+            background-color: #21262d;
+            padding: 10px 15px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .red {
+            background-color: #ff5f56;
+        }
+
+        .yellow {
+            background-color: #ffbd2e;
+        }
+
+        .green {
+            background-color: #27c93f;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        .content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+
+        .entry {
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            border-left: 2px solid transparent;
+            padding-left: 10px;
+        }
+
+        .entry.user-choice {
+            border-left-color: #58a6ff;
+            color: #58a6ff;
+            background: rgba(88, 166, 255, 0.05);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .system {
+            color: #8b949e;
+            margin-right: 10px;
+        }
+
+        .choice-container {
+            margin-top: auto;
+            border-top: 1px solid #30363d;
+            padding: 20px;
+            background: #1c2128;
+        }
+
+        button.choice-btn {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid #30363d;
+            color: #58a6ff;
+            text-align: left;
+            padding: 12px 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        button.choice-btn:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+            padding-left: 20px;
+        }
+
+        /* Navigation Dock - Top Right */
+        .dock {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(22, 27, 34, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 8px 15px;
+            border-radius: 50px;
+            display: flex;
+            gap: 10px;
+            border: 1px solid #30363d;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            z-index: 200;
+        }
+
+        .dock-item {
+            color: #8b949e;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .dock-item:hover {
+            background: #30363d;
+            color: #58a6ff;
+            transform: translateY(-2px);
+        }
+
+        .dock-item.active {
+            background: #58a6ff;
+            color: #0d1117;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+            <span style="margin-left:auto; font-size: 10px; opacity: 0.5">CPU: 12% | RAM: 4.2GB</span>
+        </div>
+        <div class="content" id="log">
+            <!-- Text entries go here -->
+        </div>
+        <div class="choice-container" id="choices">
+            <!-- Buttons go here -->
+        </div>
+    </div>
+
+    <!-- Navigation Dock -->
+    <div class="dock">
+        <a href="demo_speed_dating.html" class="dock-item" title="Speed Dating">🔥</a>
+        <a href="demo_lab_simulation.html" class="dock-item" title="Lab Simulation">🔬</a>
+        <a href="demo_research_rpg.html" class="dock-item active" title="Research RPG">⚔️</a>
+    </div>
+
+    <script>
+        const story = {
+            start: {
+                text: [
+                    "Initializing Research Protocol v2.5...",
+                    "Connection established.",
+                    "You enter the lab. It's 2 AM. A student is asleep on a beanbag.",
+                    "On your screen, a model has just outputted something... strange."
+                ],
+                choices: [
+                    { text: "Inspect the output carefully.", next: "inspect" },
+                    { text: "Check the training data logs.", next: "data" },
+                    { text: "Wake up the student to discuss it.", next: "social" }
+                ]
+            },
+            inspect: {
+                text: [
+                    "You zoom in. The model has generated a poem about 'Why paperclips are better than humans'.",
+                    "It's grammatically perfect, but ethically concerning."
+                ],
+                stats: { analysis: 1, tech: 0, social: 0 },
+                choices: [
+                    { text: "Write a script to test if this happens with other prompts.", next: "tech_path" },
+                    { text: "Document this as a potential safety risk case study.", next: "policy_path" }
+                ]
+            },
+            data: {
+                text: [
+                    "You dig into the logs.",
+                    "Whoever curated the dataset included 5000 science fiction novels from the 1960s."
+                ],
+                stats: { analysis: 0, tech: 1, social: 0 },
+                choices: [
+                    { text: "Filter the dataset and retrain.", next: "tech_path" },
+                    { text: "Analyze how sci-fi bias affects modern AI.", next: "analysis_path" }
+                ]
+            },
+            social: {
+                text: [
+                    "The student wakes up groggily.",
+                    "'Oh that?', they say. 'I was trying to make it funny. Did I break it?'"
+                ],
+                stats: { analysis: 0, tech: 0, social: 1 },
+                choices: [
+                    { text: "Brainstorm with them on how to fix the 'humor' parameter.", next: "design_path" },
+                    { text: "Interview them about their intent for a user study.", next: "analysis_path" }
+                ]
+            },
+            tech_path: {
+                text: [
+                    "You spend the night coding.",
+                    "By morning, you have a robust evaluation pipeline."
+                ],
+                stats: { analysis: 0, tech: 2, social: 0 },
+                result: "The Architect"
+            },
+            policy_path: {
+                text: [
+                    "You draft a memo on safety alignment.",
+                    "It raises important questions about what we let models read."
+                ],
+                stats: { analysis: 2, tech: 0, social: 0 },
+                result: "The Ethicist"
+            },
+            analysis_path: {
+                text: [
+                    "You find a fascinating pattern.",
+                    "It's not a bug, it's a feature of human-data interaction."
+                ],
+                stats: { analysis: 2, tech: 0, social: 1 },
+                result: "The Sense-Maker"
+            },
+            design_path: {
+                text: [
+                    "You sketch out a new interface.",
+                    "It gives users control over the 'creativity' slider."
+                ],
+                stats: { analysis: 0, tech: 1, social: 2 },
+                result: "The Prototyper"
+            }
+        };
+
+        let currentStats = { analysis: 0, tech: 0, social: 0 };
+        const log = document.getElementById('log');
+        const choiceBox = document.getElementById('choices');
+
+        async function render(nodeId) {
+            const node = story[nodeId];
+
+            // Update stats
+            if (node.stats) {
+                currentStats.analysis += node.stats.analysis;
+                currentStats.tech += node.stats.tech;
+                currentStats.social += node.stats.social;
+            }
+
+            // Clear choices temporarily
+            choiceBox.innerHTML = '';
+
+            // Render text with delay
+            for (let i = 0; i < node.text.length; i++) {
+                await new Promise(r => setTimeout(r, 600));
+                const p = document.createElement('div');
+                p.className = 'entry';
+                p.innerHTML = `<span class="system">></span> ${node.text[i]}`;
+                log.appendChild(p);
+                log.scrollTop = log.scrollHeight;
+            }
+
+            // Render choices or result
+            setTimeout(() => {
+                if (node.choices) {
+                    node.choices.forEach(choice => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = `[ ${choice.text} ]`;
+                        btn.onclick = () => {
+                            // Mark user choice in log
+                            const userLog = document.createElement('div');
+                            userLog.className = 'entry user-choice';
+                            userLog.innerText = `>> SELECTED: ${choice.text}`;
+                            log.appendChild(userLog);
+                            render(choice.next);
+                        };
+                        choiceBox.appendChild(btn);
+                    });
+                } else if (node.result) {
+                    const qualityMap = {
+                        "The Architect": "Systems Orchestrator",
+                        "The Ethicist": "Community Catalyst",
+                        "The Sense-Maker": "Information Synthesis Expert",
+                        "The Prototyper": "Human-Centered Prototyper"
+                    };
+
+                    const displayResult = qualityMap[node.result] || "Versatile Researcher";
+
+                    const res = document.createElement('div');
+                    res.className = 'entry';
+                    res.innerHTML = `<br><strong style="color:#27c93f">SIMULATION COMPLETE</strong><br>Your Research Mindset: <strong style="color:#d2a8ff; font-size:1.4em">${displayResult}</strong>`;
+                    log.appendChild(res);
+                    log.scrollTop = log.scrollHeight;
+
+                    // Save to LocalStorage (Keep original team result for Dashboard)
+                    const currentData = JSON.parse(localStorage.getItem('t4g_research_fit_data') || '{}');
+                    currentData.rpg = {
+                        archetype: node.result,
+                        stats: currentStats,
+                        timestamp: new Date().toISOString()
+                    };
+                    localStorage.setItem('t4g_research_fit_data', JSON.stringify(currentData));
+
+                    // Reboot button
+                    const restart = document.createElement('button');
+                    restart.className = 'choice-btn';
+                    restart.style.color = '#27c93f';
+                    restart.style.borderColor = '#27c93f';
+                    restart.innerText = "[ REBOOT SYSTEM (TRY AGAIN) ]";
+                    restart.onclick = () => {
+                        log.innerHTML = '';
+                        render('start');
+                    };
+                    choiceBox.appendChild(restart);
+
+                    // Exit button (Suggestion to try other demos)
+                    const exit = document.createElement('button');
+                    exit.className = 'choice-btn';
+                    exit.style.color = '#ffbd2e';
+                    exit.style.borderColor = '#ffbd2e';
+                    exit.innerText = "[ EXIT TO LAB DASHBOARD ]";
+                    exit.onclick = () => {
+                        window.location.href = 'demo_lab_simulation.html';
+                    };
+                    choiceBox.appendChild(exit);
+                }
+            }, 500);
+        }
+
+        // Start
+        render('start');
+
+    </script>
+</body>
+
+</html>

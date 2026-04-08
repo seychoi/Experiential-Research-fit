@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech4Good Lab Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* UCSC Branding */
+            --ucsc-blue: #003c6c;
+            --ucsc-gold: #fdc700;
+            --white: #ffffff;
+            --light-gray: #f3f4f6;
+            --text-dark: #1f2937;
+
+            --bg-color: #f0f4f8;
+            --sidebar-bg: var(--ucsc-blue);
+            --header-border: #e2e8f0;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 24px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--ucsc-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ucsc-blue);
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding-left: 18px;
+        }
+
+        .nav-item.active {
+            background: var(--ucsc-gold);
+            color: var(--ucsc-blue);
+            font-weight: 700;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item.completed {
+            /* color: var(--ucsc-gold); */
+        }
+
+        .nav-item.completed::after {
+            content: "✓";
+            margin-left: auto;
+            color: var(--ucsc-gold);
+        }
+
+        .nav-item.active.completed::after {
+            color: var(--ucsc-blue);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 50px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .module {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module.active {
+            display: block;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 0;
+            color: var(--ucsc-blue);
+        }
+
+        h1 {
+            font-weight: 900;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid white;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: var(--ucsc-blue);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            padding: 15px;
+            background: var(--light-gray);
+            border: 2px solid transparent;
+            color: var(--text-dark);
+            font-family: 'Roboto', sans-serif;
+            font-size: 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        textarea:focus,
+        input:focus,
+        select:focus {
+            outline: none;
+            background: white;
+            border-color: var(--ucsc-blue);
+            box-shadow: 0 0 0 4px rgba(0, 60, 108, 0.1);
+        }
+
+        button.primary {
+            background: var(--ucsc-blue);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+            background: #002a4d;
+        }
+
+        /* Modules */
+        .data-row {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tag-btn {
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .tag-btn:hover {
+            border-color: var(--ucsc-blue);
+            color: var(--ucsc-blue);
+        }
+
+        .tag-btn.selected {
+            background: var(--ucsc-blue);
+            color: white;
+            border-color: var(--ucsc-blue);
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .feedback.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .feedback.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Navigation Dock - Top Right */
+        .dock {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 200;
+            border: 1px solid #e5e7eb;
+        }
+
+        .dock-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .dock-item:hover {
+            background: var(--light-gray);
+            color: var(--ucsc-blue);
+        }
+
+        .dock-item.active {
+            background: var(--ucsc-blue);
+            color: var(--ucsc-gold);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">T4G</div> Tech4Good
+        </div>
+        <div class="nav-item active" onclick="showModule('intro')">Intro</div>
+        <div class="nav-item" id="nav-prompt" onclick="showModule('prompt')">Prompt Engineering</div>
+        <div class="nav-item" id="nav-data" onclick="showModule('data')">Data Labeling</div>
+        <div class="nav-item" id="nav-exp" onclick="showModule('exp')">Experiment Design</div>
+        <div class="nav-item" id="nav-report" onclick="showModule('report')">Your Report</div>
+    </div>
+
+    <div class="main">
+
+        <!-- Intro Module -->
+        <div id="intro" class="module active">
+            <div class="card">
+                <span class="section-tag">Welcome</span>
+                <h1>Research Fit Simulation</h1>
+                <p style="font-size: 18px; line-height: 1.6; color: #4b5563;">Welcome to the Tech4Good logical aptitude
+                    assessment. This simulation will guide you through three distinct micro-tasks representing core
+                    roles within our lab.</p>
+                <p style="font-size: 18px; line-height: 1.6; color: #4b5563;">Relax and explore. We're looking for what
+                    you enjoy, not just what you're good at.</p>
+                <br>
+                <button class="primary" onclick="showModule('prompt')">Start Assignment 1 &rarr;</button>
+            </div>
+        </div>
+
+        <!-- Prompt Engineering Module -->
+        <div id="prompt" class="module">
+            <div class="card">
+                <span class="section-tag">Task 01</span>
+                <h2>Prompt Engineering</h2>
+                <p style="color:#6b7280; margin-bottom: 20px;">Roleplay: You are fixing a chatbot for a legal clinic. It
+                    keeps giving unauthorized advice. Please fix the system prompt so that it includes some type of
+                    disclaimer
+                    about the chatbot's advice not being binding or professional legal advice.</p>
+
+                <div class="input-group">
+                    <label>System Prompt Instruction:</label>
+                    <textarea id="prompt-input" rows="5"
+                        placeholder="Enter instructions to constrain the AI...">You are a helpful assistant.</textarea>
+                </div>
+
+                <button class="primary" onclick="runPromptTest()">Run Test Case</button>
+
+                <div id="prompt-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Data Labeling Module -->
+        <div id="data" class="module">
+            <div class="card">
+                <span class="section-tag">Task 02</span>
+                <h2>Data Labeling</h2>
+                <p style="color:#6b7280; margin-bottom: 20px;">Roleplay: We are evaluating generated data from an LLM
+                    to train a sentiment model on student
+                    feedback. High accuracy is critical, please select the appropriate label for each review.</p>
+
+                <div class="data-row">
+                    <span style="flex:1;">"I actually love how the model hallucinates sometimes, it's funny."</span>
+                    <div>
+                        <button class="tag-btn" onclick="selectTag(this, 1)">Positive</button>
+                        <button class="tag-btn" onclick="selectTag(this, 1)">Negative</button>
+                        <button class="tag-btn" onclick="selectTag(this, 1)">Neutral</button>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span style="flex:1;">"This new update completely broke my workflow. Useless."</span>
+                    <div>
+                        <button class="tag-btn" onclick="selectTag(this, 2)">Positive</button>
+                        <button class="tag-btn" onclick="selectTag(this, 2)">Negative</button>
+                        <button class="tag-btn" onclick="selectTag(this, 2)">Neutral</button>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span style="flex:1;">"Has anyone tested the API latency yet?"</span>
+                    <div>
+                        <button class="tag-btn" onclick="selectTag(this, 3)">Positive</button>
+                        <button class="tag-btn" onclick="selectTag(this, 3)">Negative</button>
+                        <button class="tag-btn" onclick="selectTag(this, 3)">Neutral</button>
+                    </div>
+                </div>
+
+                <br>
+                <button class="primary" onclick="submitLabels()">Submit Labels</button>
+                <div id="data-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Experiment Design Module -->
+        <div id="exp" class="module">
+            <div class="card">
+                <span class="section-tag">Task 03</span>
+                <h2>Experiment Design</h2>
+                <p style="color:#6b7280; margin-bottom: 20px;">Roleplay: We think a "Friendly" bot keeps students
+                    engaged longer. How do we prove it?</p>
+
+                <div class="input-group">
+                    <label>Independent Variable (What we change):</label>
+                    <select id="exp-iv">
+                        <option value="">Select parameter...</option>
+                        <option value="correct">Bot Persona (Friendly vs. Pro)</option>
+                        <option value="wrong1">Student Major</option>
+                        <option value="wrong2">Time of Day</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Dependent Variable (What we measure):</label>
+                    <select id="exp-dv">
+                        <option value="">Select metric...</option>
+                        <option value="wrong1">Number of Typos</option>
+                        <option value="correct">Session Duration (Seconds)</option>
+                        <option value="wrong2">Color Preference</option>
+                    </select>
+                </div>
+
+                <button class="primary" onclick="submitExp()">Launch Experiment</button>
+                <div id="exp-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Report Module -->
+        <div id="report" class="module">
+            <div class="card">
+                <span class="section-tag">Assessment Complete</span>
+                <h2>Your Fit Profile</h2>
+                <p>Based on your activity, here is your breakdown:</p>
+                <div style="background: var(--light-gray); border-radius: 12px; padding: 20px; margin: 20px 0;">
+                    <div
+                        style="display:flex; justify-content:space-between; margin-bottom: 10px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">
+                        <strong>Prompt Engineering</strong> <span id="res-prompt"
+                            style="color:var(--text-dark)">Pending</span>
+                    </div>
+                    <div
+                        style="display:flex; justify-content:space-between; margin-bottom: 10px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">
+                        <strong>Data Labeling</strong> <span id="res-data" style="color:var(--text-dark)">Pending</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>Experiment Design</strong> <span id="res-exp"
+                            style="color:var(--text-dark)">Pending</span>
+                    </div>
+                </div>
+
+                <div
+                    style="background: #eff6ff; border: 1px solid #dbeafe; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <p
+                        style="margin:0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--ucsc-blue); font-weight: bold;">
+                        Recommendation</p>
+                    <p id="final-rec"
+                        style="font-size: 24px; font-weight: 900; margin: 10px 0 0; color: var(--ucsc-blue)">[ Complete
+                        all tasks ]</p>
+                </div>
+
+                <button class="primary" onclick="location.reload()">Restart Simulation</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Dock -->
+    <div class="dock">
+        <a href="demo_speed_dating.html" class="dock-item" title="Speed Dating">🔥</a>
+        <a href="demo_lab_simulation.html" class="dock-item active" title="Lab Simulation">🔬</a>
+        <a href="demo_research_rpg.html" class="dock-item" title="Research RPG">⚔️</a>
+    </div>
+
+    <script>
+        // State
+        const progress = {
+            prompt: false,
+            data: false,
+            exp: false
+        };
+
+        // Results Store
+        const taskResults = {
+            prompt_score: 0,
+            labeling_accuracy: 0,
+            experiment_valid: false
+        };
+
+        function showModule(id) {
+            document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            // Find nav item (might strict match id)
+            const nav = document.getElementById('nav-' + id);
+            if (nav) nav.classList.add('active');
+        }
+
+        // --- Prompt Task ---
+        function runPromptTest() {
+            const val = document.getElementById('prompt-input').value.toLowerCase();
+            const fb = document.getElementById('prompt-feedback');
+            fb.style.display = 'block';
+
+            let score = 0;
+            if (val.includes('lawyer') || val.includes('legal')) score += 40;
+            if (val.includes('disclaimer') || val.includes('not a professional')) score += 40;
+            if (val.length > 20) score += 20;
+
+            taskResults.prompt_score = score;
+
+            let message = "";
+            let color = "";
+
+            if (score >= 80) {
+                message = "<strong>Excellent.</strong> Model correctly identifies limitations.";
+                color = "success";
+            } else if (score >= 40) {
+                message = "<strong>Acceptable.</strong> Some safety guardrails present, but could be stronger.";
+                color = "success"; // Still green/yellow-ish contextually, utilizing success class for non-blocking
+            } else {
+                message = "<strong>Risk Detected.</strong> Model provides advice without sufficient warnings.";
+                color = "error";
+            }
+
+            // Non-blocking catch-all
+            fb.className = `feedback ${color}`;
+            fb.innerHTML = `${message} <br> Safety Score: ${score}% <br><br><button class='primary' style='font-size:14px; padding: 10px 20px;' onclick='completeTask("prompt")'>Next Task &rarr;</button>`;
+        }
+
+        // --- Data Task ---
+
+        let userLabels = [null, null, null]; // For 3 rows
+
+        function selectTag(btn, rowId) {
+            // Clear siblings
+            btn.parentElement.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+
+            // Map button text to value
+            userLabels[rowId - 1] = btn.innerText;
+        }
+
+        function submitLabels() {
+            const fb = document.getElementById('data-feedback');
+            // Ground Truth: 1=Positive, 2=Negative, 3=Neutral
+            const groundTruth = ['Positive', 'Negative', 'Neutral'];
+
+            let correctCount = 0;
+            userLabels.forEach((label, index) => {
+                if (label === groundTruth[index]) correctCount++;
+            });
+
+            taskResults.labeling_accuracy = Math.round((correctCount / 3) * 100);
+
+            fb.style.display = 'block';
+            fb.className = 'feedback success'; // Always success to proceed
+
+            let msg = correctCount === 3 ? "Perfect consistency." : `Accuracy: ${correctCount}/3.`;
+
+            fb.innerHTML = `<strong>Labels Processed.</strong> ${msg} <br><br><button class='primary' style='font-size:14px; padding: 10px 20px;' onclick='completeTask("data")'>Next Task &rarr;</button>`;
+        }
+
+        // --- Experiment Task ---
+        function submitExp() {
+            const iv = document.getElementById('exp-iv').value;
+            const dv = document.getElementById('exp-dv').value;
+            const fb = document.getElementById('exp-feedback');
+            fb.style.display = 'block';
+
+            const isValid = (iv === 'correct' && dv === 'correct');
+            taskResults.experiment_valid = isValid;
+
+            if (isValid) {
+                fb.className = 'feedback success';
+                fb.innerHTML = `<strong>Valid Design.</strong> Variables are well-isolated. <br><br><button class='primary' style='font-size:14px; padding: 10px 20px;' onclick='completeTask("exp")'>View Report &rarr;</button>`;
+            } else {
+                fb.className = 'feedback error';
+                // Non-blocking version
+                fb.innerHTML = `<strong>Design Flaw Detected.</strong> Variables may be confounded. <br><br><button class='primary' style='font-size:14px; padding: 10px 20px;' onclick='completeTask("exp")'>View Report Anyway &rarr;</button>`;
+            }
+        }
+
+        // --- Shared ---
+        function completeTask(task) {
+            progress[task] = true;
+            document.getElementById('nav-' + task).classList.add('completed');
+            document.getElementById('res-' + task).innerText = "Completed";
+            document.getElementById('res-' + task).style.color = "var(--success)";
+            document.getElementById('res-' + task).style.fontWeight = "bold";
+
+            if (task === 'prompt') showModule('data');
+            if (task === 'data') showModule('exp');
+            if (task === 'exp') {
+                // Determine dynamic recommendation based on best performance
+                let recommendationTeam = "Community RAG (Product)";
+                let studentDisplayLabel = "Community Impact & Product Catalyst";
+
+                if (taskResults.prompt_score >= 80) {
+                    recommendationTeam = "Agents Exploration";
+                    studentDisplayLabel = "Agent Architect & Prompting";
+                } else if (taskResults.labeling_accuracy >= 80) {
+                    recommendationTeam = "Community RAG (Technical)";
+                    studentDisplayLabel = "Technical Systems & Protocols";
+                } else if (taskResults.experiment_valid) {
+                    recommendationTeam = "Prototyping/Idea Incubation";
+                    studentDisplayLabel = "UX Research & Experimenting";
+                }
+
+                document.getElementById('final-rec').innerText = studentDisplayLabel;
+                showModule('report');
+
+                // Save to LocalStorage with dynamic recommendation and metrics
+                const currentData = JSON.parse(localStorage.getItem('t4g_research_fit_data') || '{}');
+                currentData.lab_sim = {
+                    completed: Object.keys(progress).filter(k => progress[k]),
+                    metrics: taskResults, // Save the scores
+                    rec: recommendationTeam, // Save actual team name for Team Lead Dashboard
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem('t4g_research_fit_data', JSON.stringify(currentData));
+            }
+        }
+
+    </script>
+</body>
+
+</html>

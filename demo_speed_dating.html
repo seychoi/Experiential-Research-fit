@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Speed Dating</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.7);
+            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            --accent-yes: #00ff88;
+            --accent-no: #ff4b4b;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        /* Ambient Background Particles */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: #ff00cc;
+            top: -50px;
+            left: -50px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: #00dbde;
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(30px, -30px);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 360px;
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            color: var(--text-sub);
+            font-size: 14px;
+            margin: 5px 0 0;
+            font-weight: 300;
+        }
+
+        .card-stack {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            perspective: 1000px;
+        }
+
+        .card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease;
+            cursor: grab;
+            user-select: none;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #1f2937;
+        }
+
+        .card-visual {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            height: 200px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Specific gradients for roles */
+        .role-user-research .card-visual {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .role-prompt-engineering .card-visual {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+
+        .role-data-science .card-visual {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .card-content h2 {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0 0 10px;
+            line-height: 1.1;
+        }
+
+        .card-content p {
+            font-size: 16px;
+            color: #4b5563;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: scale(1.15) translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-no {
+            color: var(--accent-no);
+        }
+
+        .btn-yes {
+            color: var(--accent-yes);
+        }
+
+        .status-overlay {
+            position: absolute;
+            top: 40px;
+            padding: 8px 16px;
+            border: 4px solid;
+            font-weight: 900;
+            font-size: 32px;
+            border-radius: 12px;
+            opacity: 0;
+            transform: rotate(-15deg) scale(0.8);
+            transition: opacity 0.2s;
+            text-transform: uppercase;
+        }
+
+        .status-like {
+            right: 40px;
+            color: var(--accent-yes);
+            border-color: var(--accent-yes);
+            transform: rotate(15deg);
+        }
+
+        .status-nope {
+            left: 40px;
+            color: var(--accent-no);
+            border-color: var(--accent-no);
+        }
+
+        /* Result Screen */
+        #results {
+            display: none;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 320px;
+        }
+
+        .match-percent {
+            font-size: 56px;
+            font-weight: 900;
+            background: linear-gradient(to right, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
+        }
+
+        /* Navigation Dock - Repositioned to Top Right */
+        .dock {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            padding: 8px 15px;
+            border-radius: 50px;
+            display: flex;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .dock-item {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .dock-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .dock-item.active {
+            background: white;
+            color: #764ba2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Navigation Dock -->
+    <div class="dock">
+        <a href="demo_speed_dating.html" class="dock-item active" title="Speed Dating">🔥</a>
+        <a href="demo_lab_simulation.html" class="dock-item" title="Lab Simulation">🔬</a>
+        <a href="demo_research_rpg.html" class="dock-item" title="Research RPG">⚔️</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Research Fit</h1>
+            <p>Swipe Right if it sparks joy.</p>
+        </div>
+
+        <div class="card-stack" id="stack">
+            <!-- Cards injected via JS -->
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-no" onclick="handleSwipe('left')">✕</button>
+            <button class="btn btn-yes" onclick="handleSwipe('right')">♥</button>
+        </div>
+
+        <div id="results">
+            <div class="result-card">
+                <h2 style="margin-top:0">It's a Match!</h2>
+                <p>You vibe most with:</p>
+                <div class="match-percent">User Research</div>
+                <p>You enjoyed 80% of tasks related to understanding human behavior.</p>
+                <button class="btn"
+                    style="width:auto; height: 50px; padding: 0 30px; border-radius: 30px; margin-top: 20px; font-size: 16px; color: white; background: rgba(255,255,255,0.2);"
+                    onclick="location.reload()">Replay</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tasks = [
+            {
+                id: 1,
+                role: "Prototyping/Idea Incubation",
+                title: "Vibe Coding",
+                desc: "Use Antigravity to rapidly prototype a design-based research project and prepare for user interviews.",
+                icon: "🎨",
+                class: "role-user-research"
+            },
+            {
+                id: 2,
+                role: "Agents Exploration",
+                title: "Agent SDK Lab",
+                desc: "Work through Google SDK labs to develop a conversational agent experience with generative UI.",
+                icon: "🤖",
+                class: "role-prompt-engineering"
+            },
+            {
+                id: 3,
+                role: "Community RAG (Tech)",
+                title: "OpenWebUI Deep Dive",
+                desc: "Troubleshoot and understand the technical layers of OpenWebUI to build independent technical skills.",
+                icon: "🛠️",
+                class: "role-data-science"
+            },
+            {
+                id: 4,
+                role: "Community RAG (Product)",
+                title: "SlugPath Launch",
+                desc: "Hustle to launch SlugPath by working with student clubs and coordinating product marketing.",
+                icon: "🚀",
+                class: "role-user-research"
+            },
+            {
+                id: 5,
+                role: "Agents Exploration",
+                title: "Prelab Creation",
+                desc: "Document your development process to create new learning content for the team's future labs.",
+                icon: "📚",
+                class: "role-prompt-engineering"
+            }
+        ];
+
+        let currentIndex = tasks.length - 1;
+        const stack = document.getElementById('stack');
+        const results = document.getElementById('results');
+        const header = document.querySelector('.header');
+        const buttons = document.querySelector('.buttons');
+
+        let likes = {
+            "Prototyping/Idea Incubation": 0,
+            "Agents Exploration": 0,
+            "Community RAG (Tech)": 0,
+            "Community RAG (Product)": 0
+        };
+
+        function init() {
+            tasks.forEach((task, index) => {
+                const el = document.createElement('div');
+                el.className = `card ${task.class || ''}`;
+                el.style.zIndex = index;
+                // Add slight random rotation for deck effect
+                const randomRot = Math.random() * 4 - 2;
+                el.style.transform = `rotate(${randomRot}deg)`;
+
+                el.innerHTML = `
+                <div class="card-tag">${task.role}</div>
+                <div class="card-visual">${task.icon}</div>
+                <div class="card-content">
+                    <h2>${task.title}</h2>
+                    <p>${task.desc}</p>
+                </div>
+                <div class="status-overlay status-like">YES</div>
+                <div class="status-overlay status-nope">NOPE</div>
+            `;
+                stack.appendChild(el);
+            });
+        }
+
+        function handleSwipe(direction) {
+            if (currentIndex < 0) return;
+
+            const card = stack.children[currentIndex];
+            const task = tasks[currentIndex];
+
+            // Visual animation
+            const translateX = direction === 'right' ? 400 : -400;
+            const rotate = direction === 'right' ? 30 : -30;
+
+            card.style.transition = "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s";
+            card.style.transform = `translate(${translateX}px, 0) rotate(${rotate}deg)`;
+            card.style.opacity = '0';
+
+            // Show overlay with transition
+            const overlayClass = direction === 'right' ? '.status-like' : '.status-nope';
+            setTimeout(() => {
+                card.querySelector(overlayClass).style.opacity = '1';
+            }, 10);
+
+            // Logic
+            if (direction === 'right') {
+                likes[task.role]++;
+            }
+
+            currentIndex--;
+
+            if (currentIndex < 0) {
+                setTimeout(showResults, 400);
+            }
+        }
+
+        function showResults() {
+            stack.style.display = 'none';
+            buttons.style.display = 'none';
+            header.style.display = 'none';
+            results.style.display = 'flex';
+
+            // Find max
+            let maxRole = Object.keys(likes).reduce((a, b) => likes[a] > likes[b] ? a : b);
+            let count = likes[maxRole];
+
+            // Map match to a vague quality for student display
+            const qualityMap = {
+                "Prototyping/Idea Incubation": "Human-Centered Prototyper",
+                "Agents Exploration": "Agentic Experience Designer",
+                "Community RAG (Tech)": "Technical Systems Thinker",
+                "Community RAG (Product)": "Product-Led Community Builder"
+            };
+
+            // Save to LocalStorage (Keep original role for Dashboard logic)
+            const currentData = JSON.parse(localStorage.getItem('t4g_research_fit_data') || '{}');
+            currentData.speed_dating = {
+                top_match: maxRole,
+                scores: likes,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('t4g_research_fit_data', JSON.stringify(currentData));
+
+            // Update result text
+            const resultCard = document.querySelector('.result-card');
+            resultCard.querySelector('.match-percent').innerText = qualityMap[maxRole] || "Versatile Researcher";
+            resultCard.querySelector('p:nth-of-type(2)').innerText = `Your interest profile points towards ${qualityMap[maxRole]?.toLowerCase() || 'a wide range of roles'}.`;
+        }
+
+        init();
+
+    </script>
+</body>
+
+</html>
