@@ -309,7 +309,7 @@
             padding: 8px 15px;
             border-radius: 50px;
             display: flex;
-            gap: 10px;
+            gap: 5px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             z-index: 200;
             border: 1px solid #e5e7eb;
@@ -318,15 +318,15 @@
         .dock-item {
             color: #9ca3af;
             text-decoration: none;
-            font-size: 18px;
-            padding: 8px;
-            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            gap: 8px;
         }
 
         .dock-item:hover {
@@ -337,6 +337,12 @@
         .dock-item.active {
             background: var(--ucsc-blue);
             color: var(--ucsc-gold);
+        }
+
+        .dock-divider {
+            width: 1px;
+            background: #e5e7eb;
+            margin: 4px 5px;
         }
     </style>
 </head>
@@ -506,9 +512,9 @@
 
     <!-- Navigation Dock -->
     <div class="dock">
-        <a href="demo_speed_dating.html" class="dock-item" title="Speed Dating">🔥</a>
-        <a href="demo_lab_simulation.html" class="dock-item active" title="Lab Simulation">🔬</a>
-        <a href="demo_research_rpg.html" class="dock-item" title="Research RPG">⚔️</a>
+        <a href="index.html" class="dock-item" title="Home">🏠 Home</a>
+        <a href="gen_ai.html" class="dock-item" title="Main Gen AI">🤖 Gen AI</a>
+
     </div>
 
     <script>
