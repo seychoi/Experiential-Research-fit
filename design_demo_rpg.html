@@ -4,15 +4,795 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Design | Role Playing Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; padding: 2rem; }
-        a { color: #ec4899; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        :root {
+            --bg-color: #0f172a;           /* Base dark */
+            --surface-color: #1e293b;      /* Panels */
+            --surface-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #ec4899;             /* Design Pink */
+            --accent-hover: #db2777;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --header-h: 70px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav Header */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: var(--header-h);
+            padding: 0 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-color);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .navbar-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .navbar-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* App Layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Left Sidebar: Components */
+        .sidebar {
+            width: 250px;
+            background: var(--bg-color);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar h3 {
+            margin: 0 0 1rem 0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .component-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            overflow-y: auto;
+        }
+
+        .draggable-item {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            user-select: none;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .draggable-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+
+        /* Center Canvas */
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--surface-color);
+        }
+
+        .workspace-toolbar {
+            height: 50px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-color);
+        }
+
+        .toggle-group {
+            background: var(--surface-color);
+            border-radius: 6px;
+            padding: 4px;
+            display: flex;
+            border: 1px solid var(--border-color);
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.4rem 1rem;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: var(--surface-hover);
+            color: var(--text-primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .canvas-bg {
+            flex: 1;
+            background-image: radial-gradient(var(--surface-hover) 1px, transparent 1px);
+            background-size: 24px 24px;
+            background-position: -12px -12px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 3rem 1rem;
+        }
+
+        .drop-zone {
+            background: var(--bg-color);
+            border: 2px dashed var(--text-secondary);
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            min-height: 400px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 2rem;
+            margin-bottom: 4rem; /* scroll space */
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--accent);
+            background: rgba(236, 72, 153, 0.05);
+        }
+
+        .drop-zone.web-view {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .drop-zone.mobile-view {
+            width: 375px;
+            min-height: 667px;
+            border-radius: 40px;
+            border: 8px solid #334155;
+            padding: 3rem 1.5rem 2rem 1.5rem; /* Space for faux notch */
+        }
+
+        .drop-zone.mobile-view::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 24px;
+            background: #334155;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .placeholder-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-secondary);
+            font-weight: 500;
+            pointer-events: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Dropped Items Configuration */
+        .canvas-item {
+            position: relative;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            animation: dropIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--text-primary);
+        }
+
+        .canvas-item:hover {
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .canvas-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Mock UI contents */
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .mock-header-links {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        .mock-hero {
+            background: linear-gradient(45deg, #1e293b, #334155);
+            border-radius: 6px;
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        .mock-hero h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .mock-text {
+            line-height: 1.6;
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        .mock-btn-wrap {
+            text-align: center;
+        }
+        .mock-btn {
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .mock-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .mock-gallery-item {
+            background: #334155;
+            height: 80px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+        }
+
+        /* Right Sidebar: RPG Mission */
+        .mission-panel {
+            width: 320px;
+            background: var(--bg-color);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .client-card {
+            background: linear-gradient(180deg, var(--surface-color) 0%, rgba(30, 41, 59, 0) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .client-avatar {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255,255,255,0.05);
+            width: 80px;
+            height: 80px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-top: -30px;
+            border: 4px solid var(--bg-color);
+        }
+
+        .client-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        .client-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .dialogue-box {
+            background: var(--surface-color);
+            border-radius: 8px;
+            padding: 1.2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .dialogue-box::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            border-width: 0 8px 8px 8px;
+            border-style: solid;
+            border-color: transparent transparent var(--surface-color) transparent;
+        }
+
+        .mission-progress {
+            margin-bottom: 2rem;
+            flex: 1;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--surface-hover);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .btn-action {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-action:disabled {
+            background: var(--surface-hover);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
     </style>
 </head>
 <body>
-    <h1>Design: Role Playing Game</h1>
-    <a href="design.html">&larr; Back to Design Track</a>
-    <p>This is a placeholder page. You can start working on the Role Playing Game experience for the Design track here!</p>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">Tech4Good</a>
+        <div class="navbar-links">
+            <a href="index.html">Home</a>
+            <a href="design.html">&larr; Back to Design Track</a>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        
+        <!-- Components Sidebar -->
+        <aside class="sidebar">
+            <h3>Layout Elements</h3>
+            <div class="component-list">
+                <div class="draggable-item" draggable="true" data-type="header">
+                    <span>📰</span> Navigation Bar
+                </div>
+                <div class="draggable-item" draggable="true" data-type="hero">
+                    <span>🖼️</span> Hero Banner
+                </div>
+                <div class="draggable-item" draggable="true" data-type="text">
+                    <span>📝</span> Text Block
+                </div>
+                <div class="draggable-item" draggable="true" data-type="gallery">
+                    <span>📸</span> Image Gallery
+                </div>
+                <div class="draggable-item" draggable="true" data-type="button">
+                    <span>🔘</span> Action Button
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Canvas Area -->
+        <main class="main-workspace">
+            <div class="workspace-toolbar">
+                <div class="toggle-group">
+                    <button id="btn-web" class="toggle-btn active">Website</button>
+                    <button id="btn-mobile" class="toggle-btn">Phone App</button>
+                </div>
+            </div>
+            <div class="canvas-bg">
+                <div id="drop-zone" class="drop-zone web-view">
+                    <div id="placeholder-text" class="placeholder-text">Drag interface elements here</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- RPG Mission / Client Brief -->
+        <aside class="mission-panel">
+            <div class="client-card">
+                <div class="client-avatar">🐶</div>
+                <h3>Squeaky Clean Pups</h3>
+                <p>Client Brief: Web & Mobile</p>
+            </div>
+            
+            <div id="dialogue-box" class="dialogue-box">
+                Hey there, designer! Welcome to Paws & Pixels Agency. The client needs a slick <strong>Website</strong> layout today. <br><br><strong>Task:</strong> Drag at least 3 elements onto the website canvas.
+            </div>
+
+            <div class="mission-progress" id="mission-progress">
+                <div class="progress-label">
+                    <span>Phase 1: Website Layout</span>
+                    <span id="progress-text">0 / 3</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <button id="btn-action" class="btn-action" disabled>Complete Phase 1</button>
+        </aside>
+
+    </div>
+
+    <!-- Simple confetti container -->
+    <div id="confetti" class="confetti"></div>
+
+    <script>
+        // --- State ---
+        let currentPhase = 1; // 1: Web, 2: Mobile
+        const reqItemsPhase1 = 3;
+        const reqItemsPhase2 = 3;
+
+        // --- DOM Elements ---
+        const draggables = document.querySelectorAll('.draggable-item');
+        const dropZone = document.getElementById('drop-zone');
+        const placeholderText = document.getElementById('placeholder-text');
+        
+        const btnWeb = document.getElementById('btn-web');
+        const btnMobile = document.getElementById('btn-mobile');
+        
+        const dialogueBox = document.getElementById('dialogue-box');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const btnAction = document.getElementById('btn-action');
+        const missionProgress = document.getElementById('mission-progress');
+
+        // --- Drag and Drop Logic ---
+        draggables.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('component-type', item.dataset.type);
+                e.dataTransfer.effectAllowed = 'copy';
+                setTimeout(() => item.classList.add('dragging'), 0);
+            });
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+            });
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+
+            const type = e.dataTransfer.getData('component-type');
+            if (type) {
+                addComponentToCanvas(type);
+                checkProgress();
+            }
+        });
+
+        function addComponentToCanvas(type) {
+            placeholderText.style.display = 'none';
+
+            const el = document.createElement('div');
+            el.className = 'canvas-item';
+            el.innerHTML = getComponentHTML(type);
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'delete-btn';
+            delBtn.innerHTML = '×';
+            delBtn.title = 'Remove';
+            delBtn.onclick = () => {
+                el.remove();
+                checkProgress();
+            };
+
+            el.appendChild(delBtn);
+            dropZone.appendChild(el);
+        }
+
+        function getComponentHTML(type) {
+            switch(type) {
+                case 'header': 
+                    return `
+                        <div class="mock-header">
+                            <div>🦴 Squeaky Clean</div>
+                            <div class="mock-header-links">Home &nbsp;&nbsp; Services &nbsp;&nbsp; Contact</div>
+                        </div>
+                    `;
+                case 'hero': 
+                    return `
+                        <div class="mock-hero">
+                            <h2>Sparkling Clean Pups</h2>
+                            <p style="color:#94a3b8; font-size:0.9rem; margin-top:0.5rem;">The premium dog washing experience.</p>
+                        </div>
+                    `;
+                case 'text': 
+                    return `
+                        <div class="mock-text">
+                            <strong>Why choose us?</strong><br>
+                            We offer top-tier grooming, deep-fur washing, and nail-trimming services for your furry friends. 
+                            Our expert team ensures a stress-free environment.
+                        </div>
+                    `;
+                case 'gallery': 
+                    return `
+                        <div class="mock-gallery">
+                            <div class="mock-gallery-item">🐩</div>
+                            <div class="mock-gallery-item">🦮</div>
+                            <div class="mock-gallery-item">🐕‍🦺</div>
+                        </div>
+                    `;
+                case 'button': 
+                    return `
+                        <div class="mock-btn-wrap">
+                            <div class="mock-btn">Book Appointment</div>
+                        </div>
+                    `;
+                default: return '<div>Unknown Component</div>';
+            }
+        }
+
+        // --- RPG Logic ---
+        function checkProgress() {
+            const itemCount = dropZone.querySelectorAll('.canvas-item').length;
+            
+            if (itemCount === 0) {
+                placeholderText.style.display = 'block';
+            } else {
+                placeholderText.style.display = 'none';
+            }
+
+            let required = currentPhase === 1 ? reqItemsPhase1 : reqItemsPhase2;
+            let displayCount = Math.min(itemCount, required);
+            
+            progressText.innerText = `${displayCount} / ${required}`;
+            let percent = (displayCount / required) * 100;
+            progressFill.style.width = `${percent}%`;
+
+            if (itemCount >= required) {
+                btnAction.disabled = false;
+                progressFill.style.background = '#10b981'; // green when done
+            } else {
+                btnAction.disabled = true;
+                progressFill.style.background = 'var(--accent)';
+            }
+        }
+
+        btnAction.addEventListener('click', () => {
+            if (currentPhase === 1) {
+                // Transition to Phase 2
+                currentPhase = 2;
+                
+                // Clear Canvas physically
+                clearCanvas();
+                switchView('mobile');
+
+                // Update UI text
+                dialogueBox.innerHTML = `
+                    Paw-fect work! 🐾 The website looks amazing.<br><br>
+                    <strong>Phase 2:</strong> Now, let's create the <strong>Phone App</strong> version. Mobile screens are narrow and vertical. Drag 3 elements into the Phone layout.
+                `;
+                document.querySelector('.progress-label span:first-child').innerText = 'Phase 2: Phone App';
+                
+                checkProgress(); // Reset progress bar visual
+                btnAction.innerText = 'Deliver to Client';
+
+            } else if (currentPhase === 2) {
+                // Completion
+                dialogueBox.innerHTML = `
+                    🎉 <strong>Mission Complete!</strong><br><br>
+                    You successfully designed both the desktop and mobile experiences for Squeaky Clean Pups!. 
+                    <br><br>This is what UI/UX Designers do: they synthesize requirements, layout interfaces, and adapt designs for different screen sizes.
+                `;
+                
+                missionProgress.style.display = 'none';
+                btnAction.innerText = 'Return to Design Track';
+                btnAction.onclick = () => window.location.href = 'design.html';
+                btnAction.disabled = false;
+
+                showConfetti();
+            }
+        });
+
+        function clearCanvas() {
+            const items = dropZone.querySelectorAll('.canvas-item');
+            items.forEach(i => i.remove());
+            placeholderText.style.display = 'block';
+        }
+
+        // --- Toolbar Logic ---
+        function switchView(view) {
+            if (view === 'web') {
+                btnWeb.classList.add('active');
+                btnMobile.classList.remove('active');
+                dropZone.classList.remove('mobile-view');
+                dropZone.classList.add('web-view');
+            } else {
+                btnMobile.classList.add('active');
+                btnWeb.classList.remove('active');
+                dropZone.classList.remove('web-view');
+                dropZone.classList.add('mobile-view');
+            }
+        }
+
+        btnWeb.addEventListener('click', () => {
+            if (currentPhase === 1) switchView('web');
+        });
+        
+        btnMobile.addEventListener('click', () => {
+            // we allow them to peek or we only let them if it's phase 2?
+            // let's allow peek, but it might mess up immersion. Let's just allow it anyway.
+            switchView('mobile');
+        });
+
+        // --- Fun Stuff ---
+        function showConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            confettiContainer.style.display = 'block';
+            
+            for (let i = 0; i < 50; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'absolute';
+                conf.style.width = '10px';
+                conf.style.height = '10px';
+                conf.style.backgroundColor = ['#ec4899', '#3b82f6', '#10b981', '#f59e0b'][Math.floor(Math.random() * 4)];
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = '-10px';
+                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                conf.style.opacity = Math.random() + 0.5;
+                conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                conf.animate([
+                    { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate3d(${Math.random() * 200 - 100}px, 100vh, 0) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 2000 + 1500,
+                    easing: 'cubic-bezier(.37,0,.63,1)',
+                    fill: 'forwards'
+                });
+                
+                confettiContainer.appendChild(conf);
+            }
+        }
+
+        // Init
+        checkProgress();
+    </script>
 </body>
 </html>
