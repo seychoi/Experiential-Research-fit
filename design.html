@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,8 @@
             --surface-hover: #334155;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --accent: #ec4899; /* Design Pink */
+            --accent: #ec4899;
+            /* Design Pink */
             --btn-border: rgba(255, 255, 255, 0.1);
         }
 
@@ -53,13 +55,36 @@
             font-weight: 500;
             transition: color 0.2s;
         }
-        .btn-back:hover { color: var(--text-primary); }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 4rem 5%; }
+        .btn-back:hover {
+            color: var(--text-primary);
+        }
 
-        .hero { text-align: center; margin-bottom: 4rem; animation: fadeIn 0.6s ease; }
-        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--accent); }
-        .hero p { font-size: 1.25rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 5%;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
 
         .task-grid {
             display: grid;
@@ -80,10 +105,21 @@
             animation: slideUp 0.6s ease backwards;
             cursor: pointer;
         }
-        
-        .task-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #ec4899; }
-        .task-card:nth-child(2) { animation-delay: 0.2s; border-top: 3px solid #ec4899; }
-        .task-card:nth-child(3) { animation-delay: 0.3s; border-top: 3px solid #ec4899; }
+
+        .task-card:nth-child(1) {
+            animation-delay: 0.1s;
+            border-top: 3px solid #ec4899;
+        }
+
+        .task-card:nth-child(2) {
+            animation-delay: 0.2s;
+            border-top: 3px solid #ec4899;
+        }
+
+        .task-card:nth-child(3) {
+            animation-delay: 0.3s;
+            border-top: 3px solid #ec4899;
+        }
 
         .task-card:hover {
             transform: translateY(-8px);
@@ -95,7 +131,7 @@
         .task-icon {
             font-size: 3rem;
             margin-bottom: 1.5rem;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             width: 80px;
             height: 80px;
             display: inline-flex;
@@ -104,22 +140,61 @@
             border-radius: 50%;
         }
 
-        .task-card h3 { margin: 0 0 0.8rem 0; font-size: 1.5rem; font-weight: 700; }
-        .task-card p { color: var(--text-secondary); font-size: 1.05rem; margin: 0; line-height: 1.5; }
+        .task-card h3 {
+            margin: 0 0 0.8rem 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .task-card p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin: 0;
+            line-height: 1.5;
+        }
 
         .outcomes {
             border-top: 1px solid var(--btn-border);
             padding-top: 4rem;
             text-align: center;
         }
-        
-        .outcomes h3 { font-size: 2rem; margin-bottom: 1rem; }
-        .outcomes p { color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;}
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .outcomes h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .outcomes p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -130,34 +205,37 @@
     <div class="container">
         <div class="hero">
             <h1>UX/UI Design</h1>
-            <p>Dive into user research, wireframing, and interaction patterns. See if crafting human-centered digital experiences is the right match for you through these tasks.</p>
+            <p>Dive into user research, wireframing, and interaction patterns. See if crafting human-centered digital
+                experiences is the right match for you through these tasks.</p>
         </div>
 
         <div class="task-grid">
-            <div class="task-card">
+            <a href="design_demo_speed_dating.html" class="task-card">
                 <div class="task-icon">📱</div>
-                <h3>Wireframing Challenge</h3>
-                <p>Placeholder: Sketch a quick interface solution for a user pain point.</p>
-            </div>
+                <h3>Speed dating</h3>
+                <p>Demo multiple rapidly generated scenarios to elicit gut reactions.</p>
+            </a>
 
-            <div class="task-card">
+            <a href="design_demo_rpg.html" class="task-card">
                 <div class="task-icon">👥</div>
-                <h3>User Testing</h3>
-                <p>Placeholder: Analyze simulated user feedback to identify friction points.</p>
-            </div>
+                <h3>Role Playing Game</h3>
+                <p>Show a potential of what day to day may look like.</p>
+            </a>
 
-            <div class="task-card">
+            <a href="design_demo_lab_simulation.html" class="task-card">
                 <div class="task-icon">✨</div>
-                <h3>Visual Aesthetics</h3>
-                <p>Placeholder: Build a mini design system with colors and typography.</p>
-            </div>
+                <h3>Lab Simulation</h3>
+                <p>Many micro tasks simulating things you would be doing in the lab.</p>
+            </a>
         </div>
 
         <div class="outcomes">
             <h3>Design Outcomes</h3>
-            <p>Blurb about real Design projects, portfolios, and user patterns created by our students. Translate empathy into functional, beautiful digital experiences.</p>
+            <p>Blurb about real Design projects, portfolios, and user patterns created by our students. Translate
+                empathy into functional, beautiful digital experiences.</p>
         </div>
     </div>
 
 </body>
+
 </html>
