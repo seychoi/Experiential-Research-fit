@@ -376,43 +376,51 @@
         const tasks = [
             {
                 id: 1,
-                role: "Prototyping/Idea Incubation",
-                title: "Vibe Coding",
-                desc: "Use Antigravity to rapidly prototype a design-based research project and prepare for user interviews.",
-                icon: "🎨",
-                class: "role-user-research"
+                category: "RAG",
+                title: "RAG",
+                desc: "Dive deep into Retrieval-Augmented Generation processes and technical architectures.",
+                icon: "🧠",
+                class: "role-data-science"
             },
             {
                 id: 2,
-                role: "Agents Exploration",
-                title: "Agent SDK Lab",
-                desc: "Work through Google SDK labs to develop a conversational agent experience with generative UI.",
-                icon: "🤖",
-                class: "role-prompt-engineering"
+                category: "Community",
+                title: "Community",
+                desc: "Focus on community building, organizing members, and orchestrating interactions.",
+                icon: "🌍",
+                class: "role-user-research"
             },
             {
                 id: 3,
-                role: "Community RAG (Tech)",
-                title: "OpenWebUI Deep Dive",
-                desc: "Troubleshoot and understand the technical layers of OpenWebUI to build independent technical skills.",
-                icon: "🛠️",
+                category: "Researching",
+                title: "Researching",
+                desc: "Conduct in-depth research to uncover the nuances of human behavior and technology.",
+                icon: "🔬",
                 class: "role-data-science"
             },
             {
                 id: 4,
-                role: "Community RAG (Product)",
-                title: "SlugPath Launch",
-                desc: "Hustle to launch SlugPath by working with student clubs and coordinating product marketing.",
-                icon: "🚀",
-                class: "role-user-research"
+                category: "PreLab creation",
+                title: "PreLab creation",
+                desc: "Design well-structured instructional labs and prepare onboarding materials.",
+                icon: "📚",
+                class: "role-prompt-engineering"
             },
             {
                 id: 5,
-                role: "Agents Exploration",
-                title: "Prelab Creation",
-                desc: "Document your development process to create new learning content for the team's future labs.",
-                icon: "📚",
+                category: "AI Prompting",
+                title: "AI Prompting",
+                desc: "Work on prompt engineering and optimizing conversational flow for generated responses.",
+                icon: "💬",
                 class: "role-prompt-engineering"
+            },
+            {
+                id: 6,
+                category: "Prototyping",
+                title: "Prototyping",
+                desc: "Rapidly build out proof-of-concept components and test ideas quickly.",
+                icon: "🎨",
+                class: "role-user-research"
             }
         ];
 
@@ -422,11 +430,23 @@
         const header = document.querySelector('.header');
         const buttons = document.querySelector('.buttons');
 
-        let likes = {
-            "Prototyping/Idea Incubation": 0,
+        const categoryToPathway = {
+            "Speed Dating": "SlugPath",
+            "RAG / Community": "SlugPath",
+            "Researching / PreLab creation": "Agents Exploration",
+            "Researching / PreLab creation / RAG / Community / AI Prompting / Prototyping": "Incubation",
+            "RAG": "SlugPath",
+            "Community": "SlugPath",
+            "Researching": "Agents Exploration",
+            "PreLab creation": "Agents Exploration",
+            "AI Prompting": "Incubation",
+            "Prototyping": "Incubation"
+        };
+
+        let pathwayScores = {
+            "SlugPath": 0,
             "Agents Exploration": 0,
-            "Community RAG (Tech)": 0,
-            "Community RAG (Product)": 0
+            "Incubation": 0
         };
 
         function init() {
@@ -439,7 +459,7 @@
                 el.style.transform = `rotate(${randomRot}deg)`;
 
                 el.innerHTML = `
-                <div class="card-tag">${task.role}</div>
+                <div class="card-tag">${task.category}</div>
                 <div class="card-visual">${task.icon}</div>
                 <div class="card-content">
                     <h2>${task.title}</h2>
@@ -474,7 +494,10 @@
 
             // Logic
             if (direction === 'right') {
-                likes[task.role]++;
+                const finalPathway = categoryToPathway[task.category];
+                if (finalPathway) {
+                    pathwayScores[finalPathway]++;
+                }
             }
 
             currentIndex--;
@@ -491,30 +514,21 @@
             results.style.display = 'flex';
 
             // Find max
-            let maxRole = Object.keys(likes).reduce((a, b) => likes[a] > likes[b] ? a : b);
-            let count = likes[maxRole];
-
-            // Map match to a vague quality for student display
-            const qualityMap = {
-                "Prototyping/Idea Incubation": "Human-Centered Prototyper",
-                "Agents Exploration": "Agentic Experience Designer",
-                "Community RAG (Tech)": "Technical Systems Thinker",
-                "Community RAG (Product)": "Product-Led Community Builder"
-            };
+            let maxPathway = Object.keys(pathwayScores).reduce((a, b) => pathwayScores[a] > pathwayScores[b] ? a : b);
 
             // Save to LocalStorage (Keep original role for Dashboard logic)
             const currentData = JSON.parse(localStorage.getItem('t4g_research_fit_data') || '{}');
             currentData.speed_dating = {
-                top_match: maxRole,
-                scores: likes,
+                top_match: maxPathway,
+                scores: pathwayScores,
                 timestamp: new Date().toISOString()
             };
             localStorage.setItem('t4g_research_fit_data', JSON.stringify(currentData));
 
             // Update result text
             const resultCard = document.querySelector('.result-card');
-            resultCard.querySelector('.match-percent').innerText = qualityMap[maxRole] || "Versatile Researcher";
-            resultCard.querySelector('p:nth-of-type(2)').innerText = `Your interest profile points towards ${qualityMap[maxRole]?.toLowerCase() || 'a wide range of roles'}.`;
+            resultCard.querySelector('.match-percent').innerText = maxPathway;
+            resultCard.querySelector('p:nth-of-type(2)').innerText = `Your interest profile points towards ${maxPathway}.`;
         }
 
         init();
