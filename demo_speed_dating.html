@@ -513,22 +513,42 @@
             header.style.display = 'none';
             results.style.display = 'flex';
 
-            // Find max
-            let maxPathway = Object.keys(pathwayScores).reduce((a, b) => pathwayScores[a] > pathwayScores[b] ? a : b);
-
-            // Save to LocalStorage (Keep original role for Dashboard logic)
-            const currentData = JSON.parse(localStorage.getItem('t4g_research_fit_data') || '{}');
-            currentData.speed_dating = {
-                top_match: maxPathway,
-                scores: pathwayScores,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('t4g_research_fit_data', JSON.stringify(currentData));
-
-            // Update result text
+            const maxScore = Math.max(...Object.values(pathwayScores));
             const resultCard = document.querySelector('.result-card');
-            resultCard.querySelector('.match-percent').innerText = maxPathway;
-            resultCard.querySelector('p:nth-of-type(2)').innerText = `Your interest profile points towards ${maxPathway}.`;
+
+            if (maxScore === 0) {
+                resultCard.innerHTML = `
+                    <h2 style="margin-top:0">No Match</h2>
+                    <p>You didn't vibe with any tasks!</p>
+                    <div class="match-percent" style="font-size: 32px;">Picky Researcher</div>
+                    <p>Don't worry, finding the right fit takes time.</p>
+                    <button class="btn"
+                        style="width:auto; height: 50px; padding: 0 30px; border-radius: 30px; margin-top: 20px; font-size: 16px; color: white; background: rgba(255,255,255,0.2);"
+                        onclick="location.reload()">Try Again</button>
+                `;
+            } else {
+                // Find max
+                let maxPathway = Object.keys(pathwayScores).reduce((a, b) => pathwayScores[a] > pathwayScores[b] ? a : b);
+
+                // Save to LocalStorage (Keep original role for Dashboard logic)
+                const currentData = JSON.parse(localStorage.getItem('t4g_research_fit_data') || '{}');
+                currentData.speed_dating = {
+                    top_match: maxPathway,
+                    scores: pathwayScores,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem('t4g_research_fit_data', JSON.stringify(currentData));
+
+                resultCard.innerHTML = `
+                    <h2 style="margin-top:0">It's a Match!</h2>
+                    <p>You vibe most with:</p>
+                    <div class="match-percent">${maxPathway}</div>
+                    <p>Your interest profile points towards ${maxPathway}.</p>
+                    <button class="btn"
+                        style="width:auto; height: 50px; padding: 0 30px; border-radius: 30px; margin-top: 20px; font-size: 16px; color: white; background: rgba(255,255,255,0.2);"
+                        onclick="location.reload()">Replay</button>
+                `;
+            }
         }
 
         init();
