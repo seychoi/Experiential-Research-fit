@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -16,7 +16,6 @@
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --accent: #ec4899;
-            /* Design Pink */
             --btn-border: rgba(255, 255, 255, 0.1);
         }
 
@@ -56,9 +55,7 @@
             transition: color 0.2s;
         }
 
-        .btn-back:hover {
-            color: var(--text-primary);
-        }
+        .btn-back:hover { color: var(--text-primary); }
 
         .container {
             max-width: 1000px;
@@ -104,22 +101,12 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: slideUp 0.6s ease backwards;
             cursor: pointer;
+            position: relative;
         }
 
-        .task-card:nth-child(1) {
-            animation-delay: 0.1s;
-            border-top: 3px solid #ec4899;
-        }
-
-        .task-card:nth-child(2) {
-            animation-delay: 0.2s;
-            border-top: 3px solid #ec4899;
-        }
-
-        .task-card:nth-child(3) {
-            animation-delay: 0.3s;
-            border-top: 3px solid #ec4899;
-        }
+        .task-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #ec4899; }
+        .task-card:nth-child(2) { animation-delay: 0.2s; border-top: 3px solid #ec4899; }
+        .task-card:nth-child(3) { animation-delay: 0.3s; border-top: 3px solid #ec4899; }
 
         .task-card:hover {
             transform: translateY(-8px);
@@ -140,58 +127,211 @@
             border-radius: 50%;
         }
 
-        .task-card h3 {
-            margin: 0 0 0.8rem 0;
-            font-size: 1.5rem;
+        .task-card h3 { margin: 0 0 0.8rem 0; font-size: 1.5rem; font-weight: 700; }
+        .task-card p { color: var(--text-secondary); font-size: 1.05rem; margin: 0; line-height: 1.5; }
+
+        /* Completion badge */
+        .done-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(236, 72, 153, 0.15);
+            color: #f472b6;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 20px;
+            font-size: 11px;
             font-weight: 700;
+            padding: 4px 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .task-card p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            margin: 0;
-            line-height: 1.5;
-        }
-
-        .outcomes {
+        /* Divider */
+        .section-divider {
+            border: none;
             border-top: 1px solid var(--btn-border);
-            padding-top: 4rem;
-            text-align: center;
+            margin: 0 0 4rem 0;
         }
 
-        .outcomes h3 {
-            font-size: 2rem;
+        /* Progress Section */
+        .progress-section { margin-bottom: 4rem; animation: slideUp 0.6s ease backwards 0.4s; }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
             margin-bottom: 1rem;
         }
 
-        .outcomes p {
+        .progress-section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .progress-section > p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
+            margin: 0 0 2rem 0;
+            font-size: 1.05rem;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .progress-card {
+            background: var(--surface-color);
+            border: 1px solid var(--btn-border);
+            border-radius: 12px;
+            padding: 1.5rem;
         }
+
+        .progress-card .p-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .progress-card .p-status {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .progress-card .p-status.done { color: #f472b6; }
+
+        .progress-card .p-detail {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            opacity: 0.8;
+        }
+
+        /* Reflection Section */
+        .reflection-section {
+            background: var(--surface-color);
+            border: 1px solid var(--btn-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            animation: slideUp 0.6s ease backwards 0.5s;
+        }
+
+        .reflection-section h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0 0 0.6rem 0;
+        }
+
+        .reflection-section > p {
+            color: var(--text-secondary);
+            margin: 0 0 1.5rem 0;
+            font-size: 1rem;
+        }
+
+        .reflection-prompts {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .prompt-chip {
+            background: rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(236, 72, 153, 0.25);
+            color: #f9a8d4;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .prompt-chip:hover {
+            background: rgba(236, 72, 153, 0.2);
+            border-color: rgba(236, 72, 153, 0.5);
+        }
+
+        textarea#reflection {
+            width: 100%;
+            min-height: 140px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--btn-border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            padding: 16px;
+            resize: vertical;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        textarea#reflection::placeholder { color: rgba(148, 163, 184, 0.5); }
+
+        textarea#reflection:focus {
+            border-color: rgba(236, 72, 153, 0.5);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+        }
+
+        .reflection-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.2rem;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .char-count { font-size: 12px; color: var(--text-secondary); }
+
+        .btn-results {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ec4899, #be185d);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.35);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-results:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(236, 72, 153, 0.5);
+        }
+
+        /* Outcomes */
+        .outcomes {
+            border-top: 1px solid var(--btn-border);
+            padding-top: 4rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .outcomes h3 { font-size: 2rem; margin-bottom: 1rem; }
+        .outcomes p { color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 
@@ -209,24 +349,74 @@
                 experiences is the right match for you through these tasks.</p>
         </div>
 
-        <div class="task-grid">
+        <div class="task-grid" id="task-grid">
             <a href="design_demo_speed_dating.html" class="task-card">
-                <div class="task-icon">📱</div>
-                <h3>Speed dating</h3>
+                <div class="task-icon">&#128241;</div>
+                <h3>Speed Dating</h3>
                 <p>Demo multiple rapidly generated scenarios to elicit gut reactions.</p>
             </a>
 
             <a href="design_demo_rpg.html" class="task-card">
-                <div class="task-icon">👥</div>
+                <div class="task-icon">&#128101;</div>
                 <h3>Role Playing Game</h3>
                 <p>Show a potential of what day to day may look like.</p>
             </a>
 
             <a href="design_demo_lab_simulation.html" class="task-card">
-                <div class="task-icon">✨</div>
+                <div class="task-icon">&#10024;</div>
                 <h3>Lab Simulation</h3>
                 <p>Many micro tasks simulating things you would be doing in the lab.</p>
             </a>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- Progress Summary -->
+        <div class="progress-section">
+            <div class="section-label">Your Progress</div>
+            <h2>Task Results</h2>
+            <p>Here is a summary of what you have completed so far across the three micro-tasks.</p>
+
+            <div class="progress-grid">
+                <div class="progress-card">
+                    <div class="p-label">Speed Dating</div>
+                    <div class="p-status" id="sd-status">Not completed</div>
+                    <div class="p-detail" id="sd-detail"></div>
+                </div>
+                <div class="progress-card">
+                    <div class="p-label">Role Playing Game</div>
+                    <div class="p-status" id="rpg-status">Not completed</div>
+                    <div class="p-detail" id="rpg-detail"></div>
+                </div>
+                <div class="progress-card">
+                    <div class="p-label">Lab Simulation</div>
+                    <div class="p-status" id="lab-status">Not completed</div>
+                    <div class="p-detail" id="lab-detail"></div>
+                </div>
+            </div>
+
+            <!-- Reflection -->
+            <div class="reflection-section">
+                <div class="section-label">Reflection</div>
+                <h2>What did you notice about yourself?</h2>
+                <p>Write honestly about which tasks felt exciting, which felt draining, and what surprised you. This reflection shapes your placement recommendation.</p>
+
+                <div class="reflection-prompts">
+                    <span class="prompt-chip" onclick="appendPrompt('I felt most energized when...')">I felt most energized when...</span>
+                    <span class="prompt-chip" onclick="appendPrompt('The task I found most interesting was...')">The task I found most interesting was...</span>
+                    <span class="prompt-chip" onclick="appendPrompt('I was surprised that...')">I was surprised that...</span>
+                    <span class="prompt-chip" onclick="appendPrompt('I would rather spend my time...')">I would rather spend my time...</span>
+                </div>
+
+                <textarea id="reflection" placeholder="Write your reflection here. There is no right answer. Be honest about what you enjoyed and what felt like a drag..." oninput="updateCharCount()"></textarea>
+
+                <div class="reflection-footer">
+                    <span class="char-count" id="char-count">0 characters</span>
+                    <button class="btn-results" onclick="saveAndGo()">
+                        View My Placement &rarr;
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="outcomes">
@@ -236,6 +426,70 @@
         </div>
     </div>
 
+    <script>
+        function loadProgress() {
+            const raw = localStorage.getItem('t4g_design_fit_data');
+            const data = raw ? JSON.parse(raw) : null;
+            const taskCards = document.querySelectorAll('.task-card');
+
+            if (!data) return;
+
+            if (data.speed_dating) {
+                const el = document.getElementById('sd-status');
+                const detail = document.getElementById('sd-detail');
+                el.textContent = 'Completed';
+                el.classList.add('done');
+                detail.textContent = 'Top match: ' + data.speed_dating.top_match;
+                if (taskCards[0]) taskCards[0].insertAdjacentHTML('afterbegin', '<span class="done-badge">Done</span>');
+            }
+
+            if (data.rpg) {
+                const el = document.getElementById('rpg-status');
+                const detail = document.getElementById('rpg-detail');
+                el.textContent = 'Completed';
+                el.classList.add('done');
+                detail.textContent = 'Archetype: ' + data.rpg.archetype;
+                if (taskCards[1]) taskCards[1].insertAdjacentHTML('afterbegin', '<span class="done-badge">Done</span>');
+            }
+
+            if (data.lab_sim) {
+                const el = document.getElementById('lab-status');
+                const detail = document.getElementById('lab-detail');
+                el.textContent = 'Completed';
+                el.classList.add('done');
+                detail.textContent = 'Fit: ' + data.lab_sim.rec;
+                if (taskCards[2]) taskCards[2].insertAdjacentHTML('afterbegin', '<span class="done-badge">Done</span>');
+            }
+
+            const saved = localStorage.getItem('t4g_design_reflection');
+            if (saved) {
+                document.getElementById('reflection').value = saved;
+                updateCharCount();
+            }
+        }
+
+        function appendPrompt(text) {
+            const ta = document.getElementById('reflection');
+            const current = ta.value.trim();
+            ta.value = current ? current + ' ' + text : text;
+            ta.focus();
+            updateCharCount();
+        }
+
+        function updateCharCount() {
+            const len = document.getElementById('reflection').value.length;
+            document.getElementById('char-count').textContent = len + ' character' + (len === 1 ? '' : 's');
+        }
+
+        function saveAndGo() {
+            const reflection = document.getElementById('reflection').value.trim();
+            localStorage.setItem('t4g_design_reflection', reflection);
+            localStorage.setItem('t4g_active_track', 'design');
+            window.location.href = 'team_lead_dashboard.html';
+        }
+
+        loadProgress();
+    </script>
 </body>
 
 </html>
