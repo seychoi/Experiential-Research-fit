@@ -108,7 +108,6 @@
         .task-card h3 { margin: 0 0 0.8rem 0; font-size: 1.5rem; font-weight: 700; }
         .task-card p { color: var(--text-secondary); font-size: 1.05rem; margin: 0; line-height: 1.5; }
 
-        /* Completion badge on task cards */
         .done-badge {
             position: absolute;
             top: 16px;
@@ -124,14 +123,12 @@
             letter-spacing: 0.5px;
         }
 
-        /* Divider */
         .section-divider {
             border: none;
             border-top: 1px solid var(--btn-border);
             margin: 0 0 4rem 0;
         }
 
-        /* Progress Section */
         .progress-section { margin-bottom: 4rem; animation: slideUp 0.6s ease backwards 0.4s; }
 
         .section-label {
@@ -195,7 +192,6 @@
             opacity: 0.8;
         }
 
-        /* Reflection Section */
         .reflection-section {
             background: var(--surface-color);
             border: 1px solid var(--btn-border);
@@ -302,7 +298,6 @@
             box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5);
         }
 
-        /* Outcomes */
         .outcomes {
             border-top: 1px solid var(--btn-border);
             padding-top: 4rem;
@@ -352,7 +347,6 @@
 
         <hr class="section-divider">
 
-        <!-- Progress Summary -->
         <div class="progress-section">
             <div class="section-label">Your Progress</div>
             <h2>Task Results</h2>
@@ -376,7 +370,6 @@
                 </div>
             </div>
 
-            <!-- Reflection -->
             <div class="reflection-section">
                 <div class="section-label">Reflection</div>
                 <h2>What did you notice about yourself?</h2>
@@ -414,7 +407,6 @@
 
             if (!data) return;
 
-            // Speed Dating
             if (data.speed_dating) {
                 const el = document.getElementById('sd-status');
                 const detail = document.getElementById('sd-detail');
@@ -426,7 +418,6 @@
                 }
             }
 
-            // RPG
             if (data.rpg) {
                 const el = document.getElementById('rpg-status');
                 const detail = document.getElementById('rpg-detail');
@@ -438,7 +429,6 @@
                 }
             }
 
-            // Lab Sim
             if (data.lab_sim) {
                 const el = document.getElementById('lab-status');
                 const detail = document.getElementById('lab-detail');
@@ -450,7 +440,6 @@
                 }
             }
 
-            // Restore saved reflection
             const saved = localStorage.getItem('t4g_reflection');
             if (saved) {
                 document.getElementById('reflection').value = saved;
@@ -474,6 +463,7 @@
         function saveAndGo() {
             const reflection = document.getElementById('reflection').value.trim();
             localStorage.setItem('t4g_reflection', reflection);
+            localStorage.setItem('t4g_active_track', 'genai');
             window.location.href = 'team_lead_dashboard.html';
         }
 
