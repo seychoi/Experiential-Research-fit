@@ -685,6 +685,7 @@
             if (!val) return;
             localStorage.setItem('t4g_gemini_key', val);
             document.getElementById('api-key-section').style.display = 'none';
+            document.getElementById('placement-error').style.display = 'none';
             runAnalysis();
         }
 
@@ -803,11 +804,16 @@ Respond ONLY with a raw JSON object. No markdown. No explanation outside the JSO
             });
         }
 
-        function showError(msg) {
+        function showError(msg, showKeyInput) {
             document.getElementById('ai-loading').style.display = 'none';
             const errEl = document.getElementById('placement-error');
             errEl.style.display = 'block';
             if (msg) errEl.textContent = msg;
+            if (showKeyInput) {
+                localStorage.removeItem('t4g_gemini_key');
+                document.getElementById('api-key-input').value = '';
+                document.getElementById('api-key-section').style.display = 'block';
+            }
         }
 
         function clearAndReset() {
@@ -842,10 +848,9 @@ Respond ONLY with a raw JSON object. No markdown. No explanation outside the JSO
             } catch (err) {
                 console.error('Placement error:', err);
                 if (err.message.includes('API_KEY') || err.message.includes('403') || err.message.includes('401')) {
-                    localStorage.removeItem('t4g_gemini_key');
-                    showError('Invalid API key. Please refresh and enter a valid Gemini API key.');
+                    showError('Invalid API key. Please enter a valid Gemini API key below.', true);
                 } else {
-                    showError('Could not generate placement. Check your API key and try again.');
+                    showError('Could not generate placement. Please re-enter your API key and try again.', true);
                 }
             }
         }
