@@ -511,7 +511,7 @@
             Tech4Good
         </a>
         <div class="nav-links">
-            <a href="gen_ai.html" class="btn-ghost">&#8592; Back to Gen AI</a>
+            <a id="back-track-btn" href="gen_ai.html" class="btn-ghost">&#8592; Back to Gen AI</a>
             <button class="btn-ghost" onclick="clearAndReset()">Clear Data</button>
         </div>
     </nav>
@@ -551,7 +551,7 @@
         <div class="reflection-box" id="reflection-box">
             <div class="rb-label">Student Reflection</div>
             <div class="rb-text" id="reflection-text">
-                <span class="rb-empty">No reflection submitted yet. Go back to Gen AI and write your reflection.</span>
+                <span class="rb-empty">No reflection submitted yet. Go back and write your reflection.</span>
             </div>
         </div>
 
@@ -605,7 +605,7 @@
             </div>
 
             <div class="action-row">
-                <a href="gen_ai.html" class="btn-primary">Update Reflection</a>
+                <a id="update-reflection-btn" href="gen_ai.html" class="btn-primary">Update Reflection</a>
                 <button class="btn-outline" onclick="location.reload()">Regenerate</button>
                 <a href="index.html" class="btn-outline">Back to Home</a>
             </div>
@@ -616,12 +616,30 @@
     <script>
         const GEMINI_MODEL = 'gemini-2.0-flash';
 
+        // ---- Track detection ----
+
+        function applyTrackLinks() {
+            const track = localStorage.getItem('t4g_active_track');
+            if (track === 'design') {
+                const backBtn = document.getElementById('back-track-btn');
+                backBtn.href = 'design.html';
+                backBtn.textContent = '\u2190 Return to UX/UI';
+
+                const reflBtn = document.getElementById('update-reflection-btn');
+                reflBtn.href = 'design.html';
+            }
+        }
+
         // ---- Data loading ----
 
         function loadPageData() {
-            const raw = localStorage.getItem('t4g_research_fit_data');
+            const track = localStorage.getItem('t4g_active_track');
+            const storageKey = track === 'design' ? 't4g_design_fit_data' : 't4g_research_fit_data';
+            const reflectionKey = track === 'design' ? 't4g_design_reflection' : 't4g_reflection';
+
+            const raw = localStorage.getItem(storageKey);
             const data = raw ? JSON.parse(raw) : {};
-            const reflection = localStorage.getItem('t4g_reflection') || '';
+            const reflection = localStorage.getItem(reflectionKey) || '';
 
             if (data.speed_dating) {
                 const el = document.getElementById('sd-val');
@@ -796,6 +814,9 @@ Respond ONLY with a raw JSON object. No markdown. No explanation outside the JSO
             if (confirm('Clear all task data and reflection?')) {
                 localStorage.removeItem('t4g_research_fit_data');
                 localStorage.removeItem('t4g_reflection');
+                localStorage.removeItem('t4g_design_fit_data');
+                localStorage.removeItem('t4g_design_reflection');
+                localStorage.removeItem('t4g_active_track');
                 location.reload();
             }
         }
@@ -807,16 +828,19 @@ Respond ONLY with a raw JSON object. No markdown. No explanation outside the JSO
             document.getElementById('placement-result').style.display = 'none';
             document.getElementById('placement-error').style.display = 'none';
 
-            const raw = localStorage.getItem('t4g_research_fit_data');
+            const track = localStorage.getItem('t4g_active_track');
+            const storageKey = track === 'design' ? 't4g_design_fit_data' : 't4g_research_fit_data';
+            const reflectionKey = track === 'design' ? 't4g_design_reflection' : 't4g_reflection';
+
+            const raw = localStorage.getItem(storageKey);
             const data = raw ? JSON.parse(raw) : {};
-            const reflection = localStorage.getItem('t4g_reflection') || '';
+            const reflection = localStorage.getItem(reflectionKey) || '';
 
             try {
                 const placement = await generatePlacement(data, reflection);
                 showPlacement(placement);
             } catch (err) {
                 console.error('Placement error:', err);
-                // If it looks like an auth error, clear the saved key so they can re-enter
                 if (err.message.includes('API_KEY') || err.message.includes('403') || err.message.includes('401')) {
                     localStorage.removeItem('t4g_gemini_key');
                     showError('Invalid API key. Please refresh and enter a valid Gemini API key.');
@@ -827,6 +851,7 @@ Respond ONLY with a raw JSON object. No markdown. No explanation outside the JSO
         }
 
         function init() {
+            applyTrackLinks();
             const { data, reflection } = loadPageData();
             const hasAnyData = data.speed_dating || data.lab_sim || data.rpg || reflection;
 
@@ -837,7 +862,6 @@ Respond ONLY with a raw JSON object. No markdown. No explanation outside the JSO
 
             const apiKey = getApiKey();
             if (!apiKey) {
-                // Show the key input instead of the spinner
                 document.getElementById('api-key-section').style.display = 'block';
                 document.getElementById('ai-loading').style.display = 'none';
             } else {
